@@ -60,7 +60,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Created at", value=user.created_at.strftime('%d %B, %Y'), inline=True)
         embed.add_field(name="Joined server at", value=user.joined_at.strftime("%d %B, %Y"), inline=True)
         embed.add_field(name="Current Roles", value=", ".join(user_roles))
-        embed.set_footer(text="BOT INFO")
+        embed.set_footer(text="SOON", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if user.avatar != None:
             embed.set_thumbnail(url=user.avatar)
         if ctx.author.avatar != None:
@@ -73,7 +73,7 @@ class Utility(commands.Cog):
     @commands.command(description="gets bot info")
     async def botinfo(self, ctx: commands.Context):
         owner = await self.bot.fetch_user(1128420485294731264)
-        embed = Embed(title="**BOT INFO**", description=f"Here's {self.bot.user.name}\'stats.", timestamp=ctx.message.created_at, colour=ctx.author.color)
+        embed = Embed(title="**INVITE ME!**", description=f"Here's {self.bot.user.name}\'stats.", timestamp=ctx.message.created_at, colour=ctx.author.color, url="https://discord.com/api/oauth2/authorize?client_id=1130152470627229858&permissions=18855442771062&scope=bot")
         embed.add_field(name="Owner", value=owner, inline=True)
         embed.add_field(name="Online since", value=f"{td} Days, {th} Hours, {tm} Minutes", inline=True)
         embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent(1)}%", inline=True)
