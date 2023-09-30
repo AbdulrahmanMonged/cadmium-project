@@ -60,7 +60,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Created at", value=user.created_at.strftime('%d %B, %Y'), inline=True)
         embed.add_field(name="Joined server at", value=user.joined_at.strftime("%d %B, %Y"), inline=True)
         embed.add_field(name="Current Roles", value=", ".join(user_roles))
-        embed.set_footer(text="TESTING")
+        embed.set_footer(text="BOT INFO")
         if user.avatar != None:
             embed.set_thumbnail(url=user.avatar)
         if ctx.author.avatar != None:
