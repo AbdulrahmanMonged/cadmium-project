@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands, tasks, pages
 from discord import Embed
+import speedtest
 import psutil
 
+st = speedtest.Speedtest()
 
 ts = 0
 tm = 0
@@ -74,6 +76,9 @@ class Utility(commands.Cog):
         embed = Embed(title="**BOT INFO**", description=f"Here's {self.bot.user.name}\'stats.", timestamp=ctx.message.created_at, colour=ctx.author.color)
         embed.add_field(name="Owner", value=owner, inline=True)
         embed.add_field(name="Online since", value=f"{td} Days, {th} Hours, {tm} Minutes", inline=True)
+        embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent(1)}%", inline=True)
+        embed.add_field(name="RAM Usage", value=f"{psutil.disk_usage('/').percent}%",inline=True)
+        embed.add_field(name="PING", value="{} ms".format(st.results.ping), inline=True)
         embed.set_thumbnail(url=self.bot.user.avatar)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
