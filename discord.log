@@ -78,3 +78,5 @@
 2023-09-30 13:42:33,523:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
 2023-09-30 13:43:14,701:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 13.
 2023-09-30 13:43:15,065:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2023-09-30 13:43:56,134:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 13.
+2023-09-30 13:43:56,325:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
