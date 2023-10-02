@@ -4,12 +4,20 @@ from discord.ext import commands
 import requests
 from discord import Embed
 import random
-import aiosqlite
 from prettytable import PrettyTable
+from urllib.parse import urlparse
+import psycopg
+import asyncio
 
 TENOR_API_KEY = os.getenv("TENOR")
 
-
+DB_URI = os.getenv("DB_URI")
+db_uri = urlparse(DB_URI)
+host = db_uri.hostname
+database = db_uri.path[1:]
+user = db_uri.username
+password = db_uri.password
+port= db_uri.port
 
 
 class Interactions(commands.Cog): 
@@ -18,7 +26,7 @@ class Interactions(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
                     async with db.cursor() as cursor:
                         await cursor.execute("""CREATE TABLE IF NOT EXISTS INTERACTIONS(
             USER1_ID BIGINT NOT NULL,
@@ -32,18 +40,18 @@ class Interactions(commands.Cog):
                         
                   
     @commands.command(description="kisses a member")
-    async def kiss(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+    async def kiss(self, ctx, member: discord.Member):
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_KISSES FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_KISSES FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 kisses = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_KISSES = NUM_KISSES + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_KISSES = NUM_KISSES + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -58,23 +66,23 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{kisses} kisses")
+        embed.set_footer(text=f"That's {kisses} kisses !")
         await ctx.send(embed=embed)
         
         
     @commands.command(description="hugs a member")
     async def hug(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_HUGS FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_HUGS FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 hugs = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_HUGS = NUM_HUGS + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_HUGS = NUM_HUGS + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -89,22 +97,22 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{hugs} hugs")
+        embed.set_footer(text=f"That's {hugs} hugs !")
         await ctx.send(embed=embed)
         
     @commands.command(description="cuddles a member")
     async def cuddle(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_CUDDLES FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_CUDDLES FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 cuddles = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_CUDDLES = NUM_CUDDLES + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_CUDDLES = NUM_CUDDLES + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -119,22 +127,22 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{cuddles} cuddles")
+        embed.set_footer(text=f"That's {cuddles} cuddles !")
         await ctx.send(embed=embed)
         
     @commands.command(description="slaps a member")
     async def slap(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_SLAPS FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_SLAPS FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 slaps = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_SLAPS = NUM_SLAPS + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_SLAPS = NUM_SLAPS + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -149,22 +157,22 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{slaps} slaps")
+        embed.set_footer(text=f"That's {slaps} slaps !")
         await ctx.send(embed=embed)
     
     @commands.command(description="pat a member")
     async def pat(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_PATS FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_PATS FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 pats = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_PATS = NUM_PATS + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_PATS = NUM_PATS + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -179,22 +187,22 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{pats} pats")
+        embed.set_footer(text=f"That's {pats} pats !")
         await ctx.send(embed=embed)
         
     @commands.command(description="licks a member")
     async def lick(self, ctx, *, member: discord.Member):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
                 if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
+                    await cursor.execute(f"INSERT INTO INTERACTIONS VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (ctx.author.id, member.id, 0, 0, 0, 0, 0, 0,))
                 await db.commit()
-                await cursor.execute("SELECT NUM_LICKS FROM INTERACTIONS where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("SELECT NUM_LICKS FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 results = await cursor.fetchone()
                 licks = results[0] + 1
-                await cursor.execute("UPDATE INTERACTIONS set NUM_LICKS = NUM_LICKS + 1 where USER1_ID = ? and USER2_ID = ?", (ctx.author.id, member.id))
+                await cursor.execute("UPDATE INTERACTIONS set NUM_LICKS = NUM_LICKS + 1 where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 await db.commit()
         apikey = TENOR_API_KEY
         lmt = 20
@@ -209,20 +217,19 @@ class Interactions(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"{licks} licks")
-        await ctx.send(embed=embed)
-        
+        embed.set_footer(text=f"That's {licks} licks !")
+        await ctx.send(embed=embed)   
         
     @commands.command(description="Returns back count of kisses")
     async def count_kisses(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_KISSES FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_KISSES FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 kisses = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()
@@ -242,12 +249,12 @@ class Interactions(commands.Cog):
     async def count_hugs(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_HUGS FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_HUGS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 hugs = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()
@@ -267,12 +274,12 @@ class Interactions(commands.Cog):
     async def count_cuddles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_CUDDLES FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_CUDDLES FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 cuddles = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()
@@ -292,12 +299,12 @@ class Interactions(commands.Cog):
     async def count_slaps(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_SLAPS FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_SLAPS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 slaps = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()
@@ -317,12 +324,12 @@ class Interactions(commands.Cog):
     async def count_pats(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_PATS FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_PATS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 pats = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()
@@ -342,12 +349,12 @@ class Interactions(commands.Cog):
     async def count_licks(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("SELECT NUM_LICKS FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT NUM_LICKS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 licks = results
-                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = ?", (member.id,))
+                await cursor.execute("SELECT USER2_ID FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
                 users_ids = results
                 x = PrettyTable()

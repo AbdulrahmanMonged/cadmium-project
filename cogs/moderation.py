@@ -1,8 +1,20 @@
 import discord
+import os
 from discord.ext import commands
 from urllib.parse import urlparse
+import psycopg
+import asyncio
 import time
-import aiosqlite
+
+
+DB_URI = os.getenv("DB_URI")
+db_uri = urlparse(DB_URI)
+host = db_uri.hostname
+database = db_uri.path[1:]
+user = db_uri.username
+password = db_uri.password
+port= db_uri.port
+
 
 class Moderation(commands.Cog): 
     def __init__(self, bot):
@@ -11,11 +23,12 @@ class Moderation(commands.Cog):
     @commands.command(description="Changes server prefix")
     @commands.has_permissions(administrator=True)
     async def setprefix(self, ctx: commands.Context, *, new_prefix: str):
-        async with aiosqlite.connect("database.db") as db:
+        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
             async with db.cursor() as cursor:
-                await cursor.execute("UPDATE GUILD set GUILD_PREFIX = ? WHERE GUILD_ID = ?", (new_prefix, ctx.guild.id))
+                await cursor.execute("UPDATE GUILD set GUILD_PREFIX = %s WHERE GUILD_ID = %s", (new_prefix, ctx.guild.id))
                 await db.commit()
                 await ctx.send("Prefix updated to `{}`".format(new_prefix))
+                
                 
     @commands.command(description="Clears the chat.")
     @commands.has_permissions(manage_messages=True)
