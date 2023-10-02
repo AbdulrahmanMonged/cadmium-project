@@ -16,7 +16,7 @@ class Bot(commands.Bot):
         self.ipc = ipc.Server(self, secret_key = "Bodyy")
         
         async def on_ipc_error(self, endpoint, error):
-            print(endpoint, "raised", error)
+            print(endpoint, "raised a", error)
 
 #------------------------------ VARIABLES ------------------------#
 TOKEN = os.getenv("TOKEN")
