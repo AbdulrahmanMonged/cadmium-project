@@ -30,7 +30,7 @@ user = db_uri.username
 password = db_uri.password
 port= db_uri.port
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def get_prefix(client, ctx):
     async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
