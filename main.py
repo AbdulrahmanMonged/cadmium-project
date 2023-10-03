@@ -30,7 +30,7 @@ user = db_uri.username
 password = db_uri.password
 port= db_uri.port
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def get_prefix(client, ctx):
     async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
@@ -183,9 +183,6 @@ async def help(ctx: discord.ApplicationContext):
     paginator = pages.Paginator(pages=help_command)
     await paginator.respond(ctx.interaction, ephemeral=False)
     
-@bot.ipc.route()
-async def get_guild_count(data):
-    return len(bot.guilds)
 
 #######
 bot.ipc.start()
@@ -193,6 +190,7 @@ bot.load_extension('cogs.interactions')
 bot.load_extension('cogs.moderation')
 bot.load_extension('cogs.utility')
 bot.load_extension('cogs.music')
+bot.load_extension('cogs.IpcRoutes')
 bot.run(TOKEN)
 
  
