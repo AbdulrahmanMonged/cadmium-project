@@ -42,6 +42,7 @@ class Utility(commands.Cog):
         join_date = member.joined_at
         embed = Embed(title=f"{member.name} joined at: {join_date.strftime('%d %B, %Y')}", colour=member.colour,timestamp
         =ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar)
         else:
@@ -60,7 +61,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Created at", value=user.created_at.strftime('%d %B, %Y'), inline=True)
         embed.add_field(name="Joined server at", value=user.joined_at.strftime("%d %B, %Y"), inline=True)
         embed.add_field(name="Current Roles", value=", ".join(user_roles))
-        embed.set_footer(text="SOON", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if user.avatar != None:
             embed.set_thumbnail(url=user.avatar)
         if ctx.author.avatar != None:
@@ -84,7 +85,7 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text="TESTING")
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
     
     @commands.command(description="Returns the avatar of a member")
@@ -94,6 +95,7 @@ class Utility(commands.Cog):
         if member.avatar != None:
             embed = Embed(title=f"{member.name}'s Avatar.", colour=ctx.author.color, timestamp=ctx.message.created_at)
             embed.set_image(url=member.avatar)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             if ctx.author.avatar != None:
                 embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
             else:
@@ -112,6 +114,7 @@ class Utility(commands.Cog):
         if roles == "":
             roles = "None"
         embed = Embed(title="{0.name}'s Roles:\n".format(member), description=f"{roles}", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
@@ -127,6 +130,7 @@ class Utility(commands.Cog):
         if banner_id:
             embed= Embed(title=f"{user.name}'s banner.", timestamp=ctx.message.created_at, color=ctx.author.color)
             embed.set_image(url=f"https://cdn.discorfapp.com/banners/{user.id}/{banner_id}?size=1024")
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             if ctx.author.avatar != None:
                 embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
             else:
@@ -155,6 +159,7 @@ class Utility(commands.Cog):
         for embed in help_command:
             for user in list1[help_command.index(embed)]:
                 embed.add_field(name=f"{user.name}", value=user.id, inline=True)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
                 if ctx.author.avatar != None:
                     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                 else:
@@ -193,6 +198,7 @@ class Utility(commands.Cog):
         for embed in help_command:
             for user in list1[help_command.index(embed)]:
                 embed.add_field(name=f"{user.name}", value=user.id, inline=True)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
                 if ctx.author.avatar != None:
                     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                 else:
@@ -224,6 +230,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Member count", value=guild.member_count, inline=False)
         embed.add_field(name="Roles count", value=len(guild.roles), inline=False)
         embed.set_thumbnail(url=guild.icon.url)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
@@ -239,6 +246,7 @@ class Utility(commands.Cog):
         embed.add_field(name="Created at", value=channel.created_at, inline=False)
         embed.add_field(name="Name", value=channel.name, inline=False)
         embed.add_field(name="Jump URL", value=channel.jump_url, inline=False)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
