@@ -60,7 +60,7 @@ logger.addHandler(handler)
     
 @bot.event
 async def on_ready():
-    print(f"We have logged in {bot.user}. ")
+    print(f"We have logged in as {bot.user}. ")
     async with await psycopg.AsyncConnection.connect(DB_URI) as db:
         async with db.cursor() as cursor:
             table_query = """CREATE TABLE IF NOT EXISTS GUILD(

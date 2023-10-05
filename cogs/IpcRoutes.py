@@ -18,10 +18,9 @@ class IpcRoutes(commands.Cog):
         self.bot.ipc = None
         
     @Server.route(name = "get_guilds")
-    async def get_bot_guilds(self, data: ClientPayload) -> dict:
+    async def get_bot_guilds(self, data) -> dict:
         guilds = [guild.id for guild in self.bot.guilds]  
-        return guilds._to_minimal_user_json()
-
+        return guilds
 
 def setup(bot):
     bot.add_cog(IpcRoutes(bot))
