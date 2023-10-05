@@ -5,19 +5,12 @@ import requests
 from discord import Embed
 import random
 from prettytable import PrettyTable
-from urllib.parse import urlparse
 import psycopg
-import asyncio
+
 
 TENOR_API_KEY = os.getenv("TENOR")
 
 DB_URI = os.getenv("DB_URI")
-db_uri = urlparse(DB_URI)
-host = db_uri.hostname
-database = db_uri.path[1:]
-user = db_uri.username
-password = db_uri.password
-port= db_uri.port
 
 
 class Interactions(commands.Cog): 
@@ -26,7 +19,7 @@ class Interactions(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
                     async with db.cursor() as cursor:
                         await cursor.execute("""CREATE TABLE IF NOT EXISTS INTERACTIONS(
             USER1_ID BIGINT NOT NULL,
@@ -41,7 +34,7 @@ class Interactions(commands.Cog):
                   
     @commands.command(description="kisses a member")
     async def kiss(self, ctx, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -72,7 +65,7 @@ class Interactions(commands.Cog):
         
     @commands.command(description="hugs a member")
     async def hug(self, ctx, *, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -102,7 +95,7 @@ class Interactions(commands.Cog):
         
     @commands.command(description="cuddles a member")
     async def cuddle(self, ctx, *, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -132,7 +125,7 @@ class Interactions(commands.Cog):
         
     @commands.command(description="slaps a member")
     async def slap(self, ctx, *, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -162,7 +155,7 @@ class Interactions(commands.Cog):
     
     @commands.command(description="pat a member")
     async def pat(self, ctx, *, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -192,7 +185,7 @@ class Interactions(commands.Cog):
         
     @commands.command(description="licks a member")
     async def lick(self, ctx, *, member: discord.Member):
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT count(*) FROM INTERACTIONS where USER1_ID = %s and USER2_ID = %s", (ctx.author.id, member.id))
                 db_result = await cursor.fetchone()
@@ -224,7 +217,7 @@ class Interactions(commands.Cog):
     async def count_kisses(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_KISSES FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
@@ -249,7 +242,7 @@ class Interactions(commands.Cog):
     async def count_hugs(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_HUGS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
@@ -274,7 +267,7 @@ class Interactions(commands.Cog):
     async def count_cuddles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_CUDDLES FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
@@ -299,7 +292,7 @@ class Interactions(commands.Cog):
     async def count_slaps(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_SLAPS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
@@ -324,7 +317,7 @@ class Interactions(commands.Cog):
     async def count_pats(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_PATS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()
@@ -349,7 +342,7 @@ class Interactions(commands.Cog):
     async def count_licks(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
-        async with await psycopg.AsyncConnection.connect(host=host, dbname=database, user=user, password=password, port=port) as db:
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("SELECT NUM_LICKS FROM INTERACTIONS where USER1_ID = %s", (member.id,))
                 results = await cursor.fetchall()

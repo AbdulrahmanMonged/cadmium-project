@@ -8,7 +8,7 @@ class IpcRoutes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         if not hasattr(bot, "ipc"):
-            bot.ipc = ipc.Server(self.bot, secret_key="Bodyy")
+            bot.ipc = ipc.Server(self.bot, secret_key="Ahmed")
 
     async def cog_load(self) -> None:
         await self.bot.ipc.start()
