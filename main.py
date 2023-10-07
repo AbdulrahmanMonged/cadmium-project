@@ -33,6 +33,30 @@ class Bot(commands.Bot):
             guilds = [guild.id for guild in self.guilds]
             response = {"data":guilds}
             return response
+
+        @Server.route(name="get_numbers")
+        async def get_users_guilds_num(self, data: ClientPayload) -> dict:
+            users_num = 0
+            guilds_num = 0
+            channels_num = 0
+            for guild in self.guilds:
+                guilds_num += 1
+                for member in guild.members:
+                    users_num += 1
+                for channel in guild.channels:
+                    channels_num += 1
+            new_data = {"users":users_num, "guilds":guilds_num , "channels":channels_num}
+            return new_data
+
+        @Server.route(name="get_commands")
+        async def get_cog_commands(self, data: ClientPayload) -> dict:
+            cogs = ['Interactions', 'Moderation', 'Music', 'Utility']
+            response = {cog_name:[] for cog_name in cogs}
+            for cog_name in cogs:
+                cog = self.get_cog(cog_name)
+                for command in cog.get_commands():
+                    response[cog_name] += [[command.name, command.description]]
+            return response
     
 # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
