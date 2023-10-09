@@ -34,14 +34,13 @@ class Moderation(commands.Cog):
         def is_me(m):
             m = True
             return m
-        if not input.isdigit():
+        if input == None:
+            input = 10
+        elif not input.isdigit():
             if input.lower() == "all":
                 input = 250
         else:
-            if input == None:
-                input = 10
-            else:
-                input = int(input)
+            input = int(input)
         deleted = await ctx.channel.purge(limit=input, check=is_me)
         message = await ctx.send(f'Deleted {len(deleted)} message(s) `This message will disappear after 3 seconds.`')
         time.sleep(3)
