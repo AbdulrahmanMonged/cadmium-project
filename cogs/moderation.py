@@ -30,13 +30,18 @@ class Moderation(commands.Cog):
                       #clear all
                       #clear 100""")
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, input: str | int = 10):
+    async def clear(self, ctx, input = None):
         def is_me(m):
             m = True
             return m
         if not input.isdigit():
             if input.lower() == "all":
                 input = 250
+        else:
+            if input == None:
+                input = 10
+            else:
+                input = int(input)
         deleted = await ctx.channel.purge(limit=input, check=is_me)
         message = await ctx.send(f'Deleted {len(deleted)} message(s) `This message will disappear after 3 seconds.`')
         time.sleep(3)
