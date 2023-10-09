@@ -30,7 +30,7 @@ class Moderation(commands.Cog):
                       #clear all
                       #clear 100""")
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, input = None):
+    async def clear(self, ctx, input: str | int = None):
         def is_me(m):
             m = True
             return m
