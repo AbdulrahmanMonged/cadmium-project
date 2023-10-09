@@ -32,7 +32,11 @@ class Interactions(commands.Cog):
             NUM_LICKS BIGINT)""")
                         
                   
-    @commands.command(description="kisses a member")
+    @commands.command(description="""Kisses a member
+                      Ex:
+                      #kiss `member name`
+                      #kiss `member id`
+                      #kiss `member mention`""")
     async def kiss(self, ctx, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -54,6 +58,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} kisses {member.name} !", color=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -63,7 +68,11 @@ class Interactions(commands.Cog):
         await ctx.send(embed=embed)
         
         
-    @commands.command(description="hugs a member")
+    @commands.command(description="""Hugs a member
+                      Ex:
+                      #hug `member name`
+                      #hug `member id`
+                      #hug `member mention`""")
     async def hug(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -85,6 +94,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} hugs {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -93,7 +103,11 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {hugs} hugs !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="cuddles a member")
+    @commands.command(description="""Cuddles a member
+                      Ex:
+                      #cuddle `member name`
+                      #cuddle `member id`
+                      #cuddle `member mention`""")
     async def cuddle(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -115,6 +129,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} cuddles {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -123,7 +138,11 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {cuddles} cuddles !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="slaps a member")
+    @commands.command(description="""Slaps a member
+                      Ex:
+                      #slap `member name`
+                      #slap `member id`
+                      #slap `member mention`""")
     async def slap(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -145,6 +164,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} slaps {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -153,7 +173,11 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {slaps} slaps !")
         await ctx.send(embed=embed)
     
-    @commands.command(description="pat a member")
+    @commands.command(description="""Pats a member
+                      Ex:
+                      #pat `member name`
+                      #pat `member id`
+                      #pat `member mention`""")
     async def pat(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -175,6 +199,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} pats {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -183,7 +208,11 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {pats} pats !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="licks a member")
+    @commands.command(description="""Licks a member
+                      Ex:
+                      #lick `member name`
+                      #lick `member id`
+                      #lick `member mention`""")
     async def lick(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -205,6 +234,7 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} licks {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
+        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
@@ -213,7 +243,12 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {licks} licks !")
         await ctx.send(embed=embed)   
         
-    @commands.command(description="Returns back count of kisses")
+    @commands.command(description="""Returns back count of kisses
+                      Ex:
+                      #count_kisses
+                      #count_kisses `member name`
+                      #count_kisses `member id`
+                      #count_kisses `member mention`""")
     async def count_kisses(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -235,10 +270,20 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Kisses", list_of_kisses)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Kisses", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    embed.add_field(name="Kisses", value=f"```\n{x.get_string()}\n```", inline=False)
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
                 
-    @commands.command(description="Returns back count of Hugs")
+    @commands.command(description="""Returns back count of Hugs
+                      Ex:
+                      #count_hugs
+                      #count_hugs `member name`
+                      #count_hugs `member id`
+                      #count_hugs `member mention`""")
     async def count_hugs(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -260,10 +305,20 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Hugs", list_of_hugs)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Hugs", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    embed.add_field(name="Hugs", value=f"```\n{x.get_string()}\n```", inline=False)
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
 
-    @commands.command(description="Returns back count of cuddles")
+    @commands.command(description="""Returns back count of cuddles
+                      Ex:
+                      #count_cuddles
+                      #count_cuddles `member name`
+                      #count_cuddles `member id`
+                      #count_cuddles `member mention`""")
     async def count_cuddles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -285,10 +340,20 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of cuddles", list_of_cuddles)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Cuddles", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    embed.add_field(name="Cuddles", value=f"```\n{x.get_string()}\n```", inline=False)
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="Returns back count of slaps")
+    @commands.command(description="""Returns back count of slaps
+                      Ex:
+                      #count_slaps
+                      #count_slaps `member name`
+                      #count_slaps `member id`
+                      #count_slaps `member mention`""")
     async def count_slaps(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -310,10 +375,20 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Slaps", list_of_slaps)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Slaps", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    embed.add_field(name="Slaps", value=f"```\n{x.get_string()}\n```", inline=False)
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="Returns back count of pats")
+    @commands.command(description="""Returns back count of pats
+                      Ex:
+                      #count_pats
+                      #count_pats `member name`
+                      #count_pats `member id`
+                      #count_pats `member mention`""")
     async def count_pats(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -335,10 +410,20 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Pats", list_of_pats)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Pats", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    embed.add_field(name="Pats", value=f"```\n{x.get_string()}\n```", inline=False)
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="Returns back count of licks")
+    @commands.command(description="""Returns back count of licks
+                      Ex:
+                      #count_licks
+                      #count_licks `member name`
+                      #count_licks `member id`
+                      #count_licks `member mention`""")
     async def count_licks(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -360,7 +445,12 @@ class Interactions(commands.Cog):
                     x.add_column("User", list_of_users)
                     x.add_column("Number of licks", list_of_licks)
                     embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
-                    embed.add_field(name="Licks", value=x, inline=False)
+                    embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                    if ctx.author.avatar != None:
+                        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                    else:
+                        embed.set_author(name=ctx.author.name)
+                    embed.add_field(name="Licks", value=f"```\n{x.get_string()}\n```", inline=False)
                     await ctx.send(embed=embed)
                     
                 
@@ -370,6 +460,7 @@ class Interactions(commands.Cog):
     async def kiss_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="KISS ERROR", value="Please mention a specific member to kiss them !")
             await ctx.send(embed=embed)
             
@@ -378,6 +469,7 @@ class Interactions(commands.Cog):
     async def hug_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="HUG ERROR", value="Please mention a specific member to hug them !")
             await ctx.send(embed=embed)
 
@@ -385,6 +477,7 @@ class Interactions(commands.Cog):
     async def cuddle_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="CUDDLE ERROR!", value="Please mention a specific member to cuddle them !")
             await ctx.send(embed=embed)
 
@@ -392,6 +485,7 @@ class Interactions(commands.Cog):
     async def slep_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="SLAP ERROR!", value="Please mention a specific member to slep them !")
             await ctx.send(embed=embed)
             
@@ -399,6 +493,7 @@ class Interactions(commands.Cog):
     async def pat_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="PAT ERROR!", value="Please mention a specific member to pat them !")
             await ctx.send(embed=embed)
     
@@ -406,6 +501,7 @@ class Interactions(commands.Cog):
     async def lick_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             embed = Embed(title="ERROR!", colour=ctx.author.color, timestamp=ctx.message.created_at)
+            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
             embed.add_field(name="LICK ERROR!", value="Please mention a specific member to lick them !")
             await ctx.send(embed=embed)
             

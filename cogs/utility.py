@@ -35,7 +35,13 @@ class Utility(commands.Cog):
     async def uptime_beforeloop(self):
         await self.bot.wait_until_ready()
     
-    @commands.command(description="Get's when the user has joined the server", name="joined")
+    @commands.command(description="""It's used when you do want to know when a user joined the server
+                      Ex:
+                      #joined 
+                      #joined `user name`
+                      #joined `user id`
+                      #joined `user mention`
+                      """)
     async def joined(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -49,7 +55,14 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author)
         await ctx.send(embed=embed)
         
-    @commands.command(description="returns user info.")
+    @commands.command(description="""It's used when you do want to know more information about a particular user
+                      Ex:
+                      #userinfo 
+                      #userinfo `user name`
+                      #userinfo `user id`
+                      #userinfo `user mention`
+                      
+                      """)
     async def userinfo(self, ctx: commands.Context, user: discord.Member = None):
         if user == None:
             user = ctx.author
@@ -71,7 +84,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
         
         
-    @commands.command(description="gets bot info")
+    @commands.command(description="Gets bot info")
     async def botinfo(self, ctx: commands.Context):
         owner = await self.bot.fetch_user(1128420485294731264)
         embed = Embed(title="**INVITE ME!**", description=f"Here's {self.bot.user.name}\'stats.", timestamp=ctx.message.created_at, colour=ctx.author.color, url="https://discord.com/api/oauth2/authorize?client_id=1130152470627229858&permissions=18855442771062&scope=bot")
@@ -87,7 +100,12 @@ class Utility(commands.Cog):
         embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
     
-    @commands.command(description="Returns the avatar of a member")
+    @commands.command(description="""Returns avatar of a member
+                      Ex:
+                      #avatar 
+                      #avatar `user name`
+                      #avatar `user id`
+                      #avatar `user mention`""")
     async def avatar(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -103,7 +121,12 @@ class Utility(commands.Cog):
         else:
             await ctx.reply(f"**{member.name}** Has no avatar.")
             
-    @commands.command(description="Returns roles of a member.")
+    @commands.command(description="""Returns roles of a member.
+                      Ex:
+                      #roles 
+                      #roles `user name`
+                      #roles `user id`
+                      #roles `user mention`""")
     async def roles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -120,7 +143,12 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name)
             await ctx.send(embed=embed)
             
-    @commands.command(description="Gets user's Current banner")
+    @commands.command(description="""Returns banner of a member(if it exists)
+                      Ex:
+                      #banner 
+                      #banner `user name`
+                      #banner `user id`
+                      #banner `user mention`""")
     async def banner(self, ctx, *, user: discord.Member = None):
         if user == None:
             user = ctx.author
@@ -139,7 +167,7 @@ class Utility(commands.Cog):
             await ctx.send(f"{user.name} has no banner")
             
             
-    @commands.command(description="gets all users in the current server")
+    @commands.command(description="Returns all users in addition to their IDs in the current server")
     async def getusers(self, ctx):
         list1 = []
         users = [user for user in ctx.message.guild.members]
@@ -178,7 +206,7 @@ class Utility(commands.Cog):
         await ctx.send("Current users in the server are:")
         await paginator.send(ctx)
         
-    @commands.command(description="Gets current guild's admins")
+    @commands.command(description="Returns current guild's admins in addition to their IDs")
     async def getadmins(self, ctx):
         list1 = []
         users = [user for user in ctx.message.guild.members if user.guild_permissions.administrator == True and user.bot != True]
@@ -218,7 +246,7 @@ class Utility(commands.Cog):
         await paginator.send(ctx)
      
          
-    @commands.command(description="Gets Guild's current Stats.")
+    @commands.command(description="Returns current Servers's Information.")
     async def serverinfo(self, ctx):
         guild = ctx.guild
         embed = Embed(title="Server info.", colour=ctx.author.color, timestamp=ctx.message.created_at)
@@ -236,7 +264,12 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name)
         await ctx.send(embed=embed)
         
-    @commands.command(description="gets channel info")
+    @commands.command(description="""returns channel information
+                      Ex:
+                      #channelinfo 
+                      #channelinfo `channel name`
+                      #channelinfo `channel id`
+                      #channelinfo `channel mention`""")
     async def channelinfo(self, ctx,* , channel: discord.abc.GuildChannel = None):
         if channel == None:
             channel = ctx.channel

@@ -27,15 +27,16 @@ class PageTest(commands.Cog):
         if x1 > 0:
             list2 = [item for item in commands[int((n-(x1*3))):]]
             list1.append(list2)  
-        help_command = [Embed(title=f"Page {num+1}") for num in range(len(list1))] 
+        help_command = [Embed(title=f"Page {num+1}", color=ctx.author.color) for num in range(len(list1))] 
         
         for embed in help_command:
             for command in list1[help_command.index(embed)]:
-                embed.add_field(name=f"{current_prefix}{str(command.name)}", value="{0} {1}".format(emoji ,str(command.description).title()), inline=True)
+                embed.add_field(name=f"**{current_prefix}{str(command.name)}**", value="\n{0} {1}\n".format(emoji ,str(command.description)), inline=False)
                 if ctx.author.avatar != None:
                     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                 else:
                     embed.set_author(name=ctx.author.name)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         return help_command
         
     
