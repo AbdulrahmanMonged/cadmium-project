@@ -30,21 +30,17 @@ class Moderation(commands.Cog):
                       #clear all
                       #clear 100""")
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, input: str | int = None):
+    async def clear(self, ctx, input: str | int = 10):
         def is_me(m):
             m = True
             return m
-        try:
+        if not input.isdigit():
             if input.lower() == "all":
                 input = 250
-        except Exception as e:
-            if input == None:
-                input = 10
-        finally:
-            deleted = await ctx.channel.purge(limit=input, check=is_me)
-            message = await ctx.send(f'Deleted {len(deleted)} message(s) `This message will disappear after 3 seconds.`')
-            time.sleep(3)
-            await message.delete()
+        deleted = await ctx.channel.purge(limit=input, check=is_me)
+        message = await ctx.send(f'Deleted {len(deleted)} message(s) `This message will disappear after 3 seconds.`')
+        time.sleep(3)
+        await message.delete()
         
     @commands.command(description="""kicks a user.
                       Ex:
