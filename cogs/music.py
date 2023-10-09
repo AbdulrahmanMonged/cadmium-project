@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks, pages
 from wavelink.ext import spotify
 import wavelink
 import datetime
@@ -15,6 +15,7 @@ class ControlPanel(discord.ui.View):
         self.vc = vc
         self.ctx: discord.ApplicationContext = ctx
         self.main_messages = messages
+    
     
     @discord.ui.button(label="Resume/Pause", style=discord.ButtonStyle.blurple)
     async def resume_and_pause(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -45,12 +46,45 @@ class ControlPanel(discord.ui.View):
         else:
             embed.set_author(name=self.ctx.author)
         queue = self.vc.queue.copy()
-        songCount = 0
-        
-        for song in queue:
-            songCount += 1
-            embed.add_field(name=f"Song Num {str(songCount)}", value=f"`{song}`")
-        await interaction.response.send_message(embed=embed)
+        list1 = []
+        users = [song for song in queue]
+        n = len(users)
+        x1 = n/15 - n//15
+        z2=0
+        for num in range(1,(n//15)+1):
+            x = num*6
+            list2 = [m for m in users[z2:x]]
+            z2 = x
+            list1.append(list2)
+        if x1 > 0:
+            list2 = [item for item in users[int((n-(x1*15))):]]
+            list1.append(list2)  
+        help_command = [discord.Embed(title=f"Page {num+1}", color=self.ctx.author.color) for num in range(len(list1))] 
+        for embed in help_command:
+            for song in list1[help_command.index(embed)]:
+                try:
+                    embed.add_field(name=f"{users.index(song) + 1} - {song.title}", value="Author: {0}".format(song.author), inline=True)
+                except Exception as e:
+                    embed.add_field(name=f"{users.index(song) + 1} - {song.title}", value="", inline=True)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                if self.ctx.author.avatar != None:
+                    embed.set_author(name=self.ctx.author.name, icon_url=self.ctx.author.avatar)
+                else:
+                    embed.set_author(name=self.ctx.author.name)
+        paginator = pages.Paginator(pages=help_command, use_default_buttons=False)
+        paginator.add_button(
+            pages.PaginatorButton("prev", label="<", style=discord.ButtonStyle.green)
+        )
+        paginator.add_button(
+            pages.PaginatorButton(
+                "page_indicator", style=discord.ButtonStyle.gray, disabled=True
+            )
+        )
+        paginator.add_button(
+            pages.PaginatorButton("next", style=discord.ButtonStyle.green)
+        )
+        await self.ctx.send("Queue:")
+        await paginator.send(self.ctx)
     
     @discord.ui.button(label="Skip", style=discord.ButtonStyle.blurple)
     async def skip(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -64,19 +98,18 @@ class ControlPanel(discord.ui.View):
         try:
             next_song = self.vc.queue.get()
             await self.vc.play(next_song)
-            await interaction.response.send_message(f"Now playing: {next_song.title}")
             message = None
             for id in self.main_messages:
                 if id == self.ctx.guild.id:
                     message = self.main_messages[id]
             if message != None:
                 embed = message.embeds[0]
-                embed.description= f"{self.vc.current.title}"
+                embed.description = f"{self.vc.current.title}"
                 embed.set_image(url=f"{self.vc.current.thumbnail}")
                 embed.set_field_at(0, name="Duration", value=f"`{str(datetime.timedelta(milliseconds=self.vc.current.length))}`")
                 embed.set_field_at(1, name="URL: ", value=f"[Click me!]({str(self.vc.current.uri)})", inline=True)
                 try:
-                    embed.set_field_at(2, name="Next Song: ", value=f"`{self.vc.queue.get()}`", inline=False )
+                    embed.set_field_at(2, name="Next Song: ", value=f"`{self.vc.queue[0].title}`", inline=False )
                 except Exception as e:
                     embed.set_field_at(2, name="Next Song: ", value=f"`{None}`", inline=False )
                 await message.edit(embed=embed)
@@ -107,14 +140,13 @@ class Music(commands.Cog):
                                             wavelink.Node(uri='eu-lavalink.lexnet.cc:443', password='lexn3tl@val!nk', secure=True),
                                             wavelink.Node(uri='suki.nathan.to:443', password='adowbongmanacc', secure=True),
                                             wavelink.Node(uri='oce-lavalink.lexnet.cc:443', password='lexn3tl@val!nk', secure=True),
-                                            wavelink.Node(uri='lavalink.justapie.net:443', password='pieajust12@XyZ', secure=True),
-                                            wavelink.Node(uri='210.246.215.110:5269', password='sygsys-lavalink_v3', secure=False),
                                             wavelink.Node(uri='54.38.198.24:88', password='stonemusicgay', secure=False),
                                             wavelink.Node(uri='54.38.198.23:88', password='stonemusicgay', secure=False),]
         bot.loop.create_task(self.node_connect())
         self.main_messages = {}
         self.main_channels = {}
-
+    
+        
     async def node_connect(self):
         await self.bot.wait_until_ready()
         await wavelink.NodePool.connect(client=self.bot,nodes=self.nodes, spotify=spotify.SpotifyClient(client_id=ID, client_secret=KEY))
@@ -153,17 +185,18 @@ class Music(commands.Cog):
                 embed.set_field_at(0, name="Duration", value=f"`{str(datetime.timedelta(milliseconds=vc.current.length))}`")
                 embed.set_field_at(1, name="URL: ", value=f"[Click me!]({str(vc.current.uri)})", inline=True)
                 try:
-                    embed.set_field_at(2, name="Next Song: ", value=f"`{vc.queue.get()}`", inline=False )
+                    embed.set_field_at(2, name="Next Song: ", value=f"`{vc.queue[0].title}`", inline=False )
                 except Exception as e:
                     embed.set_field_at(2, name="Next Song: ", value=f"`{None}`", inline=False )
                 await message.edit(embed=embed)
 
-    @commands.command(description="""Plays music From Youtube
-        Ex:
-        1- #play `song_name`
-        2- #play `song url`
-        3- #play `youtube Playlist url`
-        """)
+    @commands.command(help="""Plays music From Youtube
+                      
+         Ex:
+         {0}play `song_name`
+         {0}play `song url`
+         {0}play `youtube Playlist url`
+        """, description="Plays from Youtube")
     async def play(self, ctx: commands.Context, *, search: str):
         if not ctx.voice_client:
             vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
@@ -233,11 +266,20 @@ class Music(commands.Cog):
                 print(e)
         self.main_channels[ctx.guild.id] = ctx.channel
         try:
-            if vc.loop: return
+            if vc.loop: 
+                return
         except Exception:
             setattr(vc, "loop", False)
         
-    @commands.command(description="Panel to control your musuc")
+    @commands.command(help="""Panel to control your music
+                      This includes: 
+                      Resume/Pause Button,
+                      Queue Button,
+                      Skip Button,
+                      Disconnect Button
+                      
+                      Ex:
+                      {0}panel""", description="Panel to control your music")
     async def panel(self, ctx: commands.Context):
         if not ctx.voice_client:
             vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
@@ -253,7 +295,7 @@ class Music(commands.Cog):
         embed.add_field(name="Duration", value=f"`{str(datetime.timedelta(milliseconds=vc.current.length))}`")
         embed.add_field(name="URL: ", value=f"[Click me!]({str(vc.current.uri)})", inline=True)
         try:
-            embed.add_field(name="Next Song: ", value=f"`{vc.queue.get()}`", inline=False )
+            embed.add_field(name="Next Song: ", value=f"`{vc.queue[0].title}`", inline=False )
         except Exception:
             embed.add_field(name="Next Song: ", value="`NONE`", inline=False )
         embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
@@ -266,7 +308,11 @@ class Music(commands.Cog):
         print(self.main_messages)
         self.main_messages[message.guild.id] = message
 
-    @commands.command(description="Pauses current Song")
+    @commands.command(help="""Pauses current Song
+                      
+                      Ex:
+                      {0}pause""",
+                      description="Pauses Current Song")
     async def pause(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -280,7 +326,10 @@ class Music(commands.Cog):
         await vc.pause()
         await ctx.send("paused your music.")
         
-    @commands.command(description="Resumes current paused Song")
+    @commands.command(help="""Resumes current paused Song
+                      
+                      Ex:
+                      {0}resume""", description="Resumes Current paused Song")
     async def resume(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -294,7 +343,10 @@ class Music(commands.Cog):
         await vc.resume()
         await ctx.send("the music is back on!")
         
-    @commands.command(description="Skips current song")
+    @commands.command(help="""Skips current song
+                      
+                      Ex:
+                      {0}skip""", description="Skips Current Song")
     async def skip(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -320,7 +372,7 @@ class Music(commands.Cog):
                 embed.set_field_at(0, name="Duration", value=f"`{str(datetime.timedelta(milliseconds=vc.current.length))}`")
                 embed.set_field_at(1, name="URL: ", value=f"[Click me!]({str(vc.current.uri)})", inline=True)
                 try:
-                    embed.set_field_at(2, name="Next Song: ", value=f"`{vc.queue.get()}`", inline=False )
+                    embed.set_field_at(2, name="Next Song: ", value=f"`{vc.queue[0].title}`", inline=False )
                 except Exception as e:
                     embed.set_field_at(2, name="Next Song: ", value=f"`{None}`", inline=False )
                 await message.edit(embed=embed)
@@ -328,7 +380,11 @@ class Music(commands.Cog):
             return await ctx.send("The queue is empty!")
         
         
-    @commands.command(description="Disconnect the bot from current channel")
+    @commands.command(help="""Disconnect the bot from current channel
+                      
+                      Ex:
+                      {0}disconnect""",
+                      description="Disconnect the bot from the Voice chat")
     async def disconnect(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -340,7 +396,10 @@ class Music(commands.Cog):
         await vc.disconnect()
         await ctx.send("DISCONNECTED")
         
-    @commands.command(description="Loop current song")
+    @commands.command(help="""Loop current Song
+                      
+                      Ex:
+                      {0}loop""", description="Loops current Song")
     async def loop(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -350,15 +409,19 @@ class Music(commands.Cog):
         if not vc.is_playing():
             return await ctx.send("first play some music.")
         try: 
-            vc.loop = True
+            vc.queue.loop = True
         except:
             setattr(vc, "loop", False)
-        if vc.loop:
-            return await ctx.send("looping.")
+        if vc.queue.loop:
+            return await ctx.send("Looping: `{0.title}`",format(vc.current))
         else:
             return await ctx.send("no more loop time.")
 
-    @commands.command(description="Gets current queue")
+    @commands.command(help="""Gets current queue
+                      
+                      Ex:
+                      {0}queue""",
+                      description="Returns back current Queue")
     async def queue(self, ctx: commands.Context):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -368,23 +431,54 @@ class Music(commands.Cog):
 
         if vc.queue.is_empty:
             return await ctx.send("the queue is empty.")
-        
-        embed = discord.Embed(title="Queue", color=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-        if ctx.author.avatar != None:
-            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar)
-        else:
-            embed.set_author(name=ctx.author)
-        
+             
         queue = vc.queue.copy()
-        songCount = 0
-        for song in queue:
-            songCount += 1
-            embed.add_field(name=f"Song Num {str(songCount)}", value=f"`{song}`")
-            
-        await ctx.send(embed=embed)
+        list1 = []
+        users = [song for song in queue]
+        n = len(users)
+        x1 = n/15 - n//15
+        z2=0
+        for num in range(1,(n//15)+1):
+            x = num*6
+            list2 = [m for m in users[z2:x]]
+            z2 = x
+            list1.append(list2)
+        if x1 > 0:
+            list2 = [item for item in users[int((n-(x1*15))):]]
+            list1.append(list2)  
+        help_command = [discord.Embed(title=f"Page {num+1}", color=ctx.author.color) for num in range(len(list1))] 
+        for embed in help_command:
+            for song in list1[help_command.index(embed)]:
+                try:
+                    embed.add_field(name=f"{users.index(song) + 1} - {song.title}", value="Author: {0}".format(song.author), inline=True)
+                except Exception as e:
+                    embed.add_field(name=f"{users.index(song) + 1} - {song.title}", value="", inline=True)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                if ctx.author.avatar != None:
+                    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                else:
+                    embed.set_author(name=ctx.author.name)
+        paginator = pages.Paginator(pages=help_command, use_default_buttons=False)
+        paginator.add_button(
+            pages.PaginatorButton("prev", label="<", style=discord.ButtonStyle.green)
+        )
+        paginator.add_button(
+            pages.PaginatorButton(
+                "page_indicator", style=discord.ButtonStyle.gray, disabled=True
+            )
+        )
+        paginator.add_button(
+            pages.PaginatorButton("next", style=discord.ButtonStyle.green)
+        )
+        await ctx.send("Queue:")
+        await paginator.send(ctx)
 
-    @commands.command(description="Control volume")
+
+    @commands.command(help="""Controls volume
+                      
+                      Ex:
+                      {0}volume 100
+                      {0}volume 50""", description="Controls Volume")
     async def volume(self, ctx: commands.Context, volume: int):
         if not ctx.voice_client:
             return await ctx.send("The Bot isn't in a voice channel.")
@@ -402,11 +496,12 @@ class Music(commands.Cog):
         await ctx.send(f"Set the volume to `{volume}%`")
         return await vc.set_volume(volume)
     
-    @commands.command(description="""Play from spotify
+    @commands.command(help="""Play from spotify
+                      
                       Ex:
-                      #splay `spotify_song_url`
-                      #splay `spotify_playlist_url`
-                      Note That the spotify version isn't stable yet and it's still Under development""")
+                      {0}splay `spotify_song_url`
+                      {0}splay `spotify_playlist_url`
+                      Note That the spotify version isn't stable yet and it's still Under development""", description="Plays from Spotify")
     async def splay(self, ctx: commands.Context, *, search: str):
         if not ctx.voice_client:
                 vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)

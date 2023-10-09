@@ -35,13 +35,13 @@ class Utility(commands.Cog):
     async def uptime_beforeloop(self):
         await self.bot.wait_until_ready()
     
-    @commands.command(description="""It's used when you do want to know when a user joined the server
+    @commands.command(help="""It's used when you do want to know when a user joined the server
                       Ex:
-                      #joined 
-                      #joined `user name`
-                      #joined `user id`
-                      #joined `user mention`
-                      """)
+                      {0}joined 
+                      {0}joined user name
+                      {0}joined user id`
+                      {0}joined user mention\n
+                      """, description="Returns back when the user has joined the server")
     async def joined(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -55,14 +55,13 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author)
         await ctx.send(embed=embed)
         
-    @commands.command(description="""It's used when you do want to know more information about a particular user
+    @commands.command(help="""It's used when you do want to know more information about a particular user
                       Ex:
-                      #userinfo 
-                      #userinfo `user name`
-                      #userinfo `user id`
-                      #userinfo `user mention`
-                      
-                      """)
+                      {0}userinfo 
+                      {0}userinfo user name
+                      {0}userinfo user id
+                      {0}userinfo user mention\n
+                      """, description="Returns back user's Information")
     async def userinfo(self, ctx: commands.Context, user: discord.Member = None):
         if user == None:
             user = ctx.author
@@ -84,11 +83,18 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
         
         
-    @commands.command(description="Gets bot info")
+    @commands.command(help="""It returns back bot's information
+                      Those informations Containts: Bot's name,
+                      Ownership name,
+                      How long has the Bot been online,
+                      Cpu Usage And Ram Usage.
+                      
+                      Ex:
+                      {0}botinfo\n""", description="Returns back the bot's Information")
     async def botinfo(self, ctx: commands.Context):
         owner = await self.bot.fetch_user(1128420485294731264)
-        embed = Embed(title="**INVITE ME!**", description=f"Here's {self.bot.user.name}\'stats.", timestamp=ctx.message.created_at, colour=ctx.author.color, url="https://discord.com/api/oauth2/authorize?client_id=1130152470627229858&permissions=18855442771062&scope=bot")
-        embed.add_field(name="Owner", value=owner, inline=True)
+        embed = Embed(title="**Cadmium**", description=f"Here's {self.bot.user.name}\'s stats.", timestamp=ctx.message.created_at, colour=ctx.author.color, url="https://discord.com/api/oauth2/authorize?client_id=1130152470627229858&permissions=18855442771062&scope=bot")
+        embed.add_field(name="Owner", value=owner.name, inline=True)
         embed.add_field(name="Online since", value=f"{td} Days, {th} Hours, {tm} Minutes", inline=True)
         embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent(1)}%", inline=True)
         embed.add_field(name="RAM Usage", value=f"{psutil.disk_usage('/').percent}%",inline=True)
@@ -100,33 +106,43 @@ class Utility(commands.Cog):
         embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
     
-    @commands.command(description="""Returns avatar of a member
+    @commands.command(help="""Returns avatar of a member (if the avatar exists)
+                      
                       Ex:
-                      #avatar 
-                      #avatar `user name`
-                      #avatar `user id`
-                      #avatar `user mention`""")
-    async def avatar(self, ctx, *, member: discord.Member = None):
+                      {0}avatar  -> Returns back your Avatar
+                      {0}avatar `id` -> Note That this can get anyone's avatar whether they're in the server or not.
+                      {0}avatar `user mention`\n""",
+                      description="Returns back user's Avatar whether they're in the server or not typing their ID")
+    async def avatar(self, ctx, *, member: discord.Member | str = None):
         if member == None:
             member = ctx.author
-        if member.avatar != None:
-            embed = Embed(title=f"{member.name}'s Avatar.", colour=ctx.author.color, timestamp=ctx.message.created_at)
-            embed.set_image(url=member.avatar)
-            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-            if ctx.author.avatar != None:
-                embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+        try:
+            if member.isdigit():
+                new_member: discord.Member = await self.bot.fetch_user(int(member))
+                member = new_member
+        except Exception as e:
+                print("Didn't found")
+        finally:
+            if member.avatar != None:
+                embed = Embed(title=f"{member.name}'s Avatar.", colour=ctx.author.color, timestamp=ctx.message.created_at)
+                embed.set_image(url=member.avatar)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                if ctx.author.avatar != None:
+                    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                else:
+                    embed.set_author(name=ctx.author.name)
+                await ctx.reply(embed=embed)
             else:
-                embed.set_author(name=ctx.author.name)
-            await ctx.reply(embed=embed)
-        else:
-            await ctx.reply(f"**{member.name}** Has no avatar.")
+                await ctx.reply(f"**{member.name}** Has no avatar.")
             
-    @commands.command(description="""Returns roles of a member.
+    @commands.command(help="""Returns roles of a member.
+                      
                       Ex:
-                      #roles 
-                      #roles `user name`
-                      #roles `user id`
-                      #roles `user mention`""")
+                      {0}roles -> Returns back your roles
+                      {0}roles `user name`
+                      {0}roles `id`
+                      {0}roles `user mention`\n""",
+                      description="Returns back user's Roles")
     async def roles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -143,31 +159,40 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name)
             await ctx.send(embed=embed)
             
-    @commands.command(description="""Returns banner of a member(if it exists)
+    @commands.command(help="""Returns banner of a member(if they has one)
+                      
                       Ex:
-                      #banner 
-                      #banner `user name`
-                      #banner `user id`
-                      #banner `user mention`""")
-    async def banner(self, ctx, *, user: discord.Member = None):
+                      {0}banner 
+                      {0}banner `user id` -> Note That this can get anyone's banner whether they're in the server or not.
+                      {0}banner `user mention`\n""", description="Returns back user's Banner whether they're in the server or not typing their ID")
+    async def banner(self, ctx, *, user: discord.Member | str = None):
         if user == None:
             user = ctx.author
-        req = await self.bot.http.request(discord.http.Route("GET", "/users/{uid}", uid=user.id))
-        banner_id = req["banner"]
-        if banner_id:
-            embed= Embed(title=f"{user.name}'s banner.", timestamp=ctx.message.created_at, color=ctx.author.color)
-            embed.set_image(url=f"https://cdn.discorfapp.com/banners/{user.id}/{banner_id}?size=1024")
-            embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-            if ctx.author.avatar != None:
-                embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+        try:
+            if user.isdigit():
+                new_member: discord.Member = await self.bot.fetch_user(int(user))
+                user = new_member
+        except Exception as e:
+                print("Didn't found")
+        finally:
+            if user.banner != None:
+                embed= Embed(title=f"{user.name}'s banner.", timestamp=ctx.message.created_at, color=ctx.author.color)
+                embed.set_image(url=user.banner.url)
+                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                if ctx.author.avatar != None:
+                    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                else:
+                    embed.set_author(name=ctx.author.name) 
+                await ctx.send(embed=embed)
             else:
-                embed.set_author(name=ctx.author.name) 
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"{user.name} has no banner")
+                await ctx.send(f"{user.name} has no banner")
             
             
-    @commands.command(description="Returns all users in addition to their IDs in the current server")
+    @commands.command(help="""Returns all users' name in addition to their IDs in the current server
+                    
+                      Ex:
+                      {0}getusers""", 
+                      description="Returns all users in the server")
     async def getusers(self, ctx):
         list1 = []
         users = [user for user in ctx.message.guild.members]
@@ -206,7 +231,10 @@ class Utility(commands.Cog):
         await ctx.send("Current users in the server are:")
         await paginator.send(ctx)
         
-    @commands.command(description="Returns current guild's admins in addition to their IDs")
+    @commands.command(help="""Returns current guild's admins' names in addition to their IDs
+                      
+                      Ex:
+                      {0}getadmins""", description="Returns Current guild's Admins")
     async def getadmins(self, ctx):
         list1 = []
         users = [user for user in ctx.message.guild.members if user.guild_permissions.administrator == True and user.bot != True]
@@ -246,7 +274,18 @@ class Utility(commands.Cog):
         await paginator.send(ctx)
      
          
-    @commands.command(description="Returns current Servers's Information.")
+    @commands.command(help="""Returns current Servers's Information.
+                      This includes:
+                      Server name,
+                      Server Owner<
+                      Server ID,
+                      When the Server Created at,
+                      How many members in the server,
+                      How many Roles in the server
+                      
+                      Ex:
+                      {0}serverinfo""", 
+                      description="Returns Server's Infos")
     async def serverinfo(self, ctx):
         guild = ctx.guild
         embed = Embed(title="Server info.", colour=ctx.author.color, timestamp=ctx.message.created_at)
@@ -264,12 +303,19 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name)
         await ctx.send(embed=embed)
         
-    @commands.command(description="""returns channel information
+    @commands.command(help="""returns channel information
+                      This includes:
+                      Ctegory,
+                      When the channel has been created,
+                      Name of the channel,
+                      Url for the channel
+                      
                       Ex:
-                      #channelinfo 
-                      #channelinfo `channel name`
-                      #channelinfo `channel id`
-                      #channelinfo `channel mention`""")
+                      {0}channelinfo 
+                      {0}channelinfo `channel name`
+                      {0}channelinfo `channel id`
+                      {0}channelinfo `channel mention`""",
+                      description="Returns Channels's info")
     async def channelinfo(self, ctx,* , channel: discord.abc.GuildChannel = None):
         if channel == None:
             channel = ctx.channel
@@ -283,7 +329,6 @@ class Utility(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-
         await ctx.send(embed=embed)
 
     

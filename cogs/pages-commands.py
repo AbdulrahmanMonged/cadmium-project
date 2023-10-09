@@ -10,6 +10,14 @@ DB_URI = os.getenv("DB_URI")
 class PageTest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    async def get_prefix(self, ctx):
+        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
+            async with db.cursor() as cursor:
+                await cursor.execute("SELECT guild_prefix FROM GUILD where GUILD_ID = %s", (ctx.guild.id,))
+                results = await cursor.fetchone()
+                current_prefix = results[0].strip(" ")
+                return current_prefix
 
     def get_commands(self, cog_name, current_prefix , ctx) -> list:
         cog = self.bot.get_cog(f'{cog_name}')
@@ -36,17 +44,13 @@ class PageTest(commands.Cog):
                     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                 else:
                     embed.set_author(name=ctx.author.name)
-                embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                embed.set_footer(text="Use {0}help <command name> to get more information".format(current_prefix), icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         return help_command
         
     
-    @commands.slash_command(description="Help command")
-    async def help(self, ctx: discord.ApplicationContext):
-        async with await psycopg.AsyncConnection.connect(DB_URI) as db:
-            async with db.cursor() as cursor:
-                await cursor.execute("SELECT guild_prefix FROM GUILD where GUILD_ID = %s", (ctx.guild.id,))
-                results = await cursor.fetchone()
-                current_prefix = results[0].strip(" ")
+    @commands.slash_command(description="Help command", name="help")
+    async def help_commands(self, ctx: discord.ApplicationContext):
+        current_prefix = await self.get_prefix(ctx)
         page_buttons = [
             pages.PaginatorButton(
                 "first", label="<<-", style=discord.ButtonStyle.green
@@ -80,6 +84,29 @@ class PageTest(commands.Cog):
                                     custom_view=view)
         await paginator.respond(ctx.interaction, ephemeral=False)
 
-
+    @commands.command()
+    async def help(self, ctx, *, command_name : str = None):
+        found = False
+        current_prefix = await self.get_prefix(ctx)
+        if command_name != None:
+            for command in self.bot.walk_commands():
+                if command.name == command_name:
+                    try:
+                        found = True
+                        description=f"{command.help}"
+                        embed = Embed(title="**{0}{1}**".format(current_prefix, command.name), description=f"{command.help}".format(current_prefix), timestamp=ctx.message.created_at, colour=ctx.author.color)
+                        if ctx.author.avatar != None:
+                            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
+                        else:
+                            embed.set_author(name=ctx.author.name)
+                        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
+                        await ctx.send(embed=embed)
+                    except Exception as e:
+                        await ctx.send(e)
+            if not found:
+                await ctx.send("Invaild Command name.\nSyntax is: `{0}help command_name`\nLike {0}help avatar\nYou can get all commands using </help:1130171436573655091>".format(current_prefix))
+        else:   
+            await ctx.send("Invaild Command name.\nSyntax is: `{0}help command_name`\nFor example: {0}help avatar\nYou can get all commands using </help:1130171436573655091>".format(current_prefix))
+                    
 def setup(bot):
     bot.add_cog(PageTest(bot))

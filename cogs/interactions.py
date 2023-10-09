@@ -32,11 +32,13 @@ class Interactions(commands.Cog):
             NUM_LICKS BIGINT)""")
                         
                   
-    @commands.command(description="""Kisses a member
+    @commands.command(help="""Kisses a member
+                      
                       Ex:
-                      #kiss `member name`
-                      #kiss `member id`
-                      #kiss `member mention`""")
+                      {0}kiss `member name`
+                      {0}kiss `member id`
+                      {0}kiss `member mention`""",
+                      description="Kisses a member")
     async def kiss(self, ctx, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -68,11 +70,13 @@ class Interactions(commands.Cog):
         await ctx.send(embed=embed)
         
         
-    @commands.command(description="""Hugs a member
+    @commands.command(help="""Hugs a member
+                      
                       Ex:
-                      #hug `member name`
-                      #hug `member id`
-                      #hug `member mention`""")
+                      {0}hug `member name`
+                      {0}hug `member id`
+                      {0}hug `member mention`""", 
+                      description="Hugs a member")
     async def hug(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -103,11 +107,13 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {hugs} hugs !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="""Cuddles a member
+    @commands.command(help="""Cuddles a member
+                      
                       Ex:
-                      #cuddle `member name`
-                      #cuddle `member id`
-                      #cuddle `member mention`""")
+                      {0}cuddle `member name`
+                      {0}cuddle `member id`
+                      {0}cuddle `member mention`""",
+                      description="Cuddles a member")
     async def cuddle(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -138,11 +144,13 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {cuddles} cuddles !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="""Slaps a member
+    @commands.command(help="""Slaps a member
+                      
                       Ex:
-                      #slap `member name`
-                      #slap `member id`
-                      #slap `member mention`""")
+                      {0}slap `member name`
+                      {0}slap `member id`
+                      {0}slap `member mention`""",
+                      description="Slaps a member")
     async def slap(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -173,11 +181,13 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {slaps} slaps !")
         await ctx.send(embed=embed)
     
-    @commands.command(description="""Pats a member
+    @commands.command(help="""Pats a member
+                      
                       Ex:
-                      #pat `member name`
-                      #pat `member id`
-                      #pat `member mention`""")
+                      {0}pat `member name`
+                      {0}pat `member id`
+                      {0}pat `member mention`""",
+                      description="Pats a member")
     async def pat(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -208,11 +218,13 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {pats} pats !")
         await ctx.send(embed=embed)
         
-    @commands.command(description="""Licks a member
+    @commands.command(help="""Licks a member
+                      
                       Ex:
-                      #lick `member name`
-                      #lick `member id`
-                      #lick `member mention`""")
+                      {0}lick `member name`
+                      {0}lick `member id`
+                      {0}lick `member mention`""",
+                      description="Licks a member")
     async def lick(self, ctx, *, member: discord.Member):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
@@ -243,12 +255,14 @@ class Interactions(commands.Cog):
         embed.set_footer(text=f"That's {licks} licks !")
         await ctx.send(embed=embed)   
         
-    @commands.command(description="""Returns back count of kisses
+    @commands.command(help="""Returns back count of kisses
+                      
                       Ex:
-                      #count_kisses
-                      #count_kisses `member name`
-                      #count_kisses `member id`
-                      #count_kisses `member mention`""")
+                      {0}count_kisses
+                      {0}count_kisses `member name`
+                      {0}count_kisses `member id`
+                      {0}count_kisses `member mention`""",
+                      description="Returns back count of Kisses")
     async def count_kisses(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -265,7 +279,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(kisses[users.index(user)][0]) != 0]
                 list_of_kisses = [kiss[0] for kiss in kisses if int(kiss[0]) != 0]
                 if len(list_of_kisses) == 0:
-                    await ctx.send("{} hasn't kissed anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't kissed anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Kisses", list_of_kisses)
@@ -278,12 +292,14 @@ class Interactions(commands.Cog):
                         embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
                 
-    @commands.command(description="""Returns back count of Hugs
+    @commands.command(help="""Returns back count of Hugs
+                      
                       Ex:
-                      #count_hugs
-                      #count_hugs `member name`
-                      #count_hugs `member id`
-                      #count_hugs `member mention`""")
+                      {0}count_hugs
+                      {0}count_hugs `member name`
+                      {0}count_hugs `member id`
+                      {0}count_hugs `member mention`""",
+                      description="Returns back count of Hugs")
     async def count_hugs(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -300,7 +316,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(hugs[users.index(user)][0]) != 0]
                 list_of_hugs = [hug[0] for hug in hugs if int(hug[0]) != 0]
                 if len(list_of_hugs) == 0:
-                    await ctx.send("{} hasn't hugged anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't hugged anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Hugs", list_of_hugs)
@@ -313,12 +329,14 @@ class Interactions(commands.Cog):
                         embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
 
-    @commands.command(description="""Returns back count of cuddles
+    @commands.command(help="""Returns back count of cuddles
+                      
                       Ex:
-                      #count_cuddles
-                      #count_cuddles `member name`
-                      #count_cuddles `member id`
-                      #count_cuddles `member mention`""")
+                      {0}count_cuddles
+                      {0}count_cuddles `member name`
+                      {0}count_cuddles `member id`
+                      {0}count_cuddles `member mention`""",
+                      description="Returns back count of cuddles")
     async def count_cuddles(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -335,7 +353,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(cuddles[users.index(user)][0]) != 0]
                 list_of_cuddles = [cuddle[0] for cuddle in cuddles if int(cuddle[0]) != 0]
                 if len(list_of_cuddles) == 0:
-                    await ctx.send("{} hasn't cuddled anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't cuddled anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of cuddles", list_of_cuddles)
@@ -348,12 +366,14 @@ class Interactions(commands.Cog):
                         embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="""Returns back count of slaps
+    @commands.command(help="""Returns back count of slaps
+                      
                       Ex:
-                      #count_slaps
-                      #count_slaps `member name`
-                      #count_slaps `member id`
-                      #count_slaps `member mention`""")
+                      {0}count_slaps
+                      {0}count_slaps `member name`
+                      {0}count_slaps `member id`
+                      {0}count_slaps `member mention`""",
+                      description="Returns back count of slaps")
     async def count_slaps(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -370,7 +390,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(slaps[users.index(user)][0]) != 0]
                 list_of_slaps = [slap[0] for slap in slaps if int(slap[0]) != 0]
                 if len(list_of_slaps) == 0:
-                    await ctx.send("{} hasn't slapped anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't slapped anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Slaps", list_of_slaps)
@@ -383,12 +403,14 @@ class Interactions(commands.Cog):
                         embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="""Returns back count of pats
+    @commands.command(help="""Returns back count of pats
+                      
                       Ex:
-                      #count_pats
-                      #count_pats `member name`
-                      #count_pats `member id`
-                      #count_pats `member mention`""")
+                      {0}count_pats
+                      {0}count_pats `member name`
+                      {0}count_pats `member id`
+                      {0}count_pats `member mention`""",
+                      description="Returns back count of pats")
     async def count_pats(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -405,7 +427,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(pats[users.index(user)][0]) != 0]
                 list_of_pats = [pat[0] for pat in pats if int(pat[0]) != 0]
                 if len(list_of_pats) == 0:
-                    await ctx.send("{} hasn't patted anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't patted anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Pats", list_of_pats)
@@ -418,12 +440,14 @@ class Interactions(commands.Cog):
                         embed.set_author(name=ctx.author.name)
                     await ctx.send(embed=embed)
     
-    @commands.command(description="""Returns back count of licks
+    @commands.command(help="""Returns back count of licks
+                      
                       Ex:
-                      #count_licks
-                      #count_licks `member name`
-                      #count_licks `member id`
-                      #count_licks `member mention`""")
+                      {0}count_licks
+                      {0}count_licks `member name`
+                      {0}count_licks `member id`
+                      {0}count_licks `member mention`""",
+                      description="Returns back count of licks")
     async def count_licks(self, ctx, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
@@ -440,7 +464,7 @@ class Interactions(commands.Cog):
                 list_of_users = [user.name for user in users if int(licks[users.index(user)][0]) != 0]
                 list_of_licks = [lick[0] for lick in licks if int(lick[0]) != 0]
                 if len(list_of_licks) == 0:
-                    await ctx.send("{} hasn't licked anyone yet.".format(member.name))
+                    await ctx.send("{0} hasn't licked anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of licks", list_of_licks)
@@ -455,7 +479,7 @@ class Interactions(commands.Cog):
                     
                 
         
-    ########################################## ERROR SECTION ###############################
+    ####################### ERROR SECTION ######################################
     @kiss.error
     async def kiss_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -505,6 +529,6 @@ class Interactions(commands.Cog):
             embed.add_field(name="LICK ERROR!", value="Please mention a specific member to lick them !")
             await ctx.send(embed=embed)
             
-    #################################################
+#################################################################
 def setup(bot):
     bot.add_cog(Interactions(bot)) 

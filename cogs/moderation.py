@@ -12,23 +12,29 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command(description="""Changes current server's prefix
+    @commands.command(help="""Changes current server's prefix
+                      Permissions Required: `Manage Server`
+                      
                       Ex:
-                      #setprefix `!`""")
+                      {0}setprefix `!`""",
+                      description="Changes Current server's Prefix")
     @commands.has_permissions(manage_guild=True)
     async def setprefix(self, ctx: commands.Context, *, new_prefix: str):
         async with await psycopg.AsyncConnection.connect(DB_URI) as db:
             async with db.cursor() as cursor:
                 await cursor.execute("UPDATE GUILD set GUILD_PREFIX = %s WHERE GUILD_ID = %s", (new_prefix, ctx.guild.id))
                 await db.commit()
-                await ctx.send("Prefix updated to `{}`".format(new_prefix))
+                await ctx.send("Prefix updated to `{0}`".format(new_prefix))
                 
                 
-    @commands.command(description="""Clears the chat.
+    @commands.command(help="""Clears the chat.
+                      Permissions Required: `Manage Messages`
+                      
                       Ex:
-                      #clear
-                      #clear all
-                      #clear 100""")
+                      {0}clear
+                      {0}clear all
+                      {0}clear 100""",
+                      description="Clears the chat")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, input = None):
         def is_me(m):
@@ -46,30 +52,46 @@ class Moderation(commands.Cog):
         time.sleep(3)
         await message.delete()
         
-    @commands.command(description="""kicks a user.
+    @commands.command(help="""kicks a user.
+                      Permissions Required: `Kick Members`
+                      It can kick Many Members
+                      The preferred way is using Mention
+                      
                       Ex:
-                      #kick 
-                      #kick `user name`
-                      #kick `user id`
-                      #kick `user mention`""")
+                      {0}kick `user id`
+                      {0}kick `user mention`""", description="Kicks a member or Many Members")
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, *, member: discord.Member):
-        await member.kick()
-        await ctx.reply("**{0.name} has been kicked successfully**".format(member))
+    async def kick(self, ctx, members: commands.Greedy[discord.Member], *, reason:str = None):
+        for member in members:
+            await member.kick(reason=reason)
+        if reason != None:
+            await ctx.reply("**{0} has been kicked successfully For reason: {1}**".format(", ".join(member.name for member in members),reason))
+        else:
+            await ctx.reply("**{0} has been kicked successfully**".format(", ".join(member.name for member in members)))
+
         
-    @commands.command(description="""bans a user.
+    @commands.command(help="""bans a user.
+                      Permissions Required: `Ban Members`
+                      It can Ban Many Members
+                      The preferred way is using Mention
+                      
                       Ex:
-                      #ban 
-                      #ban `user name`
-                      #ban `user id`
-                      #ban `user mention`""")
+                      {0}ban `user id`
+                      {0}ban `user mention`""", description="Bans a member or Many Members")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member,*,reason: str = "Banned."):
-        await member.ban(delete_message_days=7, reason="Fuck off! ~banned by {0}~ for reason: {1}".format(ctx.author, reason))
-        await ctx.reply("**{0.name} has been banned successfully**".format(member))
+    async def ban(self, ctx, members: commands.Greedy[discord.Member],*,reason: str = None):
+        for member in members:
+            if reason != None:
+                await member.ban(delete_message_days=7, reason="banned by {0}\n for reason: {1}".format(ctx.author, "No Reason provided"))
+            else:
+                await member.ban(delete_message_days=7, reason="banned by {0}\n for reason: {1}".format(ctx.author, reason))     
+        if reason == None:       
+            await ctx.reply("**{0} has been banned successfully**".format(", ".join(member.name for member in members)))
+        else:
+            await ctx.reply("**{0} has been banned successfully for reason: {1}**".format(", ".join(member.name for member in members)), reason)
         
         
-#------------------------- ERRORS --------------------#
+#------------------------- ERROR HANDLING --------------------#
     @setprefix.error
     async def setprefix_error(self, ctx, error):
         await ctx.send("You don't have the permission to implement this command.")
