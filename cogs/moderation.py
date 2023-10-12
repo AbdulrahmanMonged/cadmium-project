@@ -249,7 +249,7 @@ class Moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the permission to Change Prefix.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
         
     @clear.error
     async def clear_error(self, ctx, error):
@@ -258,7 +258,7 @@ class Moderation(commands.Cog):
         elif isinstance(error.original, discord.Forbidden):
             await ctx.send("The Bot Doesn't have permissions to Kick members.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
         
     @kick.error
     async def kick_error(self, ctx, error):
@@ -269,7 +269,7 @@ class Moderation(commands.Cog):
         elif isinstance(error.original, discord.Forbidden):
             await ctx.send("The Bot Doesn't have permissions to Kick members.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
     
     @ban.error
     async def ban_error(self, ctx, error):
@@ -282,7 +282,7 @@ class Moderation(commands.Cog):
         elif isinstance(error.original, discord.Forbidden):
             await ctx.send("The Bot Doesn't have permissions to Ban members.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
         
 
     
@@ -297,7 +297,7 @@ class Moderation(commands.Cog):
         elif isinstance(error.original, discord.Forbidden):
             await ctx.send("The Bot Doesn't have permissions to unban members.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
     
     @role.error
     async def role_error(self, ctx, error):
@@ -310,7 +310,7 @@ class Moderation(commands.Cog):
         elif isinstance(error.original, discord.Forbidden):
             await ctx.send("The Bot Doesn't have permissions to update members.")
         else:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
     
     @lock.error
     async def lock_error(self, ctx, error):
@@ -324,7 +324,7 @@ class Moderation(commands.Cog):
             if isinstance(error.original, discord.Forbidden):
                 await ctx.send("The Bot Doesn't have permissions to Manage Channels.")
         except:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
             
     @unlock.error
     async def unlock_error(self, ctx, error):
@@ -338,7 +338,7 @@ class Moderation(commands.Cog):
             if isinstance(error.original, discord.Forbidden):
                 await ctx.send("The Bot Doesn't have permissions to Manage Channels.")
         except:
-            await ctx.send("An error occured please report using /report")
+            await ctx.send("An error occured please report using </report:1162168670169075843>")
      
         
 def setup(bot):
