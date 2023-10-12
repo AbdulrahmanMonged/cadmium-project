@@ -46,8 +46,7 @@ class Admin(commands.Cog):
     async def reload_cog(self, ctx: discord.ApplicationContext, *, arg):
         member_rank = await self.is_admin(ctx.author)
         if member_rank == 99:
-            self.bot.unload_extension(f'cogs.{arg}')
-            self.bot.load_extension(f'cogs.{arg}')
+            self.bot.reload_extension(f'cogs.{arg.lower()}')
             await ctx.respond(f"{arg} EXTENSION IS RELOADED")
         else:
             await ctx.respond("THIS IS FOR ADMIN ONLY!")

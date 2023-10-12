@@ -2,7 +2,7 @@ import discord
 import os
 import logging
 from discord import Embed
-from discord.ext import commands, pages, ipc
+from discord.ext import commands, ipc
 import asyncio
 import psycopg
 from discord.ext.ipc.server import Server
@@ -135,21 +135,6 @@ async def on_ready():
                             await cursor.execute(f"INSERT INTO USERS VALUES (%s ,%s)", (member.id, 0))    
             await db.commit()
     
-    async with await psycopg.AsyncConnection.connect(DB_URI) as db:
-        async with db.cursor() as cursor:
-            table_query = """CREATE TABLE IF NOT EXISTS COMMANDS(
-                                    COMMAND_NAME CHAR(255) NOT NULL,
-                                    COMMAND_DESCRIPTION CHAR(255) NOT NULL) 
-                                    """
-                                
-            await cursor.execute(table_query)
-            commands = [command for command in bot.walk_commands()]
-            for command in commands:
-                await cursor.execute("SELECT count(*) FROM COMMANDS where COMMAND_NAME = %s", (command.name,))
-                db_result = await cursor.fetchone()
-                if db_result[0] == 0:
-                    await cursor.execute(f"INSERT INTO COMMANDS VALUES (%s ,%s)", (command.name, command.description.title()))    
-            await db.commit()
 
 @bot.event
 async def on_command_error(ctx: discord.ApplicationContext, error: discord.DiscordException):

@@ -60,13 +60,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} kisses {member.name} !", color=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {kisses} kisses !")
+        embed.set_footer(text=f"{kisses} Kisses!", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
         
         
@@ -98,13 +97,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} hugs {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {hugs} hugs !")
+        embed.set_footer(text=f"{hugs} Hugs!", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
         
     @commands.command(help="""Cuddles a member
@@ -135,13 +133,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} cuddles {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {cuddles} cuddles !")
+        embed.set_footer(text=f"{cuddles} Cuddles", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
         
     @commands.command(help="""Slaps a member
@@ -172,13 +169,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} slaps {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {slaps} slaps !")
+        embed.set_footer(text=f"{slaps} Slaps!", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
     
     @commands.command(help="""Pats a member
@@ -209,13 +205,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} pats {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {pats} pats !")
+        embed.set_footer(text=f"{pats} Pats!", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)
         
     @commands.command(help="""Licks a member
@@ -246,13 +241,12 @@ class Interactions(commands.Cog):
         random_data = random.choice(r.json()["results"])
         img = random_data["media_formats"]["gif"]["url"]
         embed = Embed(title=f"{ctx.author.name} licks {member.name} !", colour=ctx.author.color, timestamp=ctx.message.created_at)
-        embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         embed.set_image(url=img)
         if ctx.author.avatar != None:
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
         else:
             embed.set_author(name=ctx.author.name)
-        embed.set_footer(text=f"That's {licks} licks !")
+        embed.set_footer(text=f"{licks} Licks!", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
         await ctx.send(embed=embed)   
         
     @commands.command(help="""Returns back count of kisses
@@ -283,9 +277,10 @@ class Interactions(commands.Cog):
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Kisses", list_of_kisses)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.sortby = "Number of Kisses"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-                    embed.add_field(name="Kisses", value=f"```\n{x.get_string()}\n```", inline=False)
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                     else:
@@ -320,9 +315,10 @@ class Interactions(commands.Cog):
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Hugs", list_of_hugs)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.sortby = "Number of Hugs"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-                    embed.add_field(name="Hugs", value=f"```\n{x.get_string()}\n```", inline=False)
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                     else:
@@ -356,10 +352,11 @@ class Interactions(commands.Cog):
                     await ctx.send("{0} hasn't cuddled anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
-                    x.add_column("Number of cuddles", list_of_cuddles)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.add_column("Number of Cuddles", list_of_cuddles)
+                    x.sortby = "Number of Cuddles"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-                    embed.add_field(name="Cuddles", value=f"```\n{x.get_string()}\n```", inline=False)
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                     else:
@@ -394,9 +391,10 @@ class Interactions(commands.Cog):
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Slaps", list_of_slaps)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.sortby = "Number of Slaps"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-                    embed.add_field(name="Slaps", value=f"```\n{x.get_string()}\n```", inline=False)
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                     else:
@@ -431,9 +429,10 @@ class Interactions(commands.Cog):
                 else:
                     x.add_column("User", list_of_users)
                     x.add_column("Number of Pats", list_of_pats)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.sortby = "Number of Pats"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
-                    embed.add_field(name="Pats", value=f"```\n{x.get_string()}\n```", inline=False)
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)
                     else:
@@ -467,8 +466,10 @@ class Interactions(commands.Cog):
                     await ctx.send("{0} hasn't licked anyone yet.".format(member.name))
                 else:
                     x.add_column("User", list_of_users)
-                    x.add_column("Number of licks", list_of_licks)
-                    embed = Embed(colour=ctx.author.color, timestamp=ctx.message.created_at)
+                    x.add_column("Number of Licks", list_of_licks)
+                    x.sortby = "Number of Licks"
+                    x.reversesort = True
+                    embed = Embed(description=f"```\n{x.get_string()}\n```",colour=ctx.author.color, timestamp=ctx.message.created_at)
                     embed.set_footer(text="Cadmium", icon_url="https://i.ibb.co/ypybNCS/image-1.png")
                     if ctx.author.avatar != None:
                         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar)

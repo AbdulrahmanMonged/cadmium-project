@@ -1,9 +1,7 @@
 import discord
 from discord.ext import commands, tasks, pages
 from discord import Embed
-import speedtest
 import psutil
-
 
 
 ts = 0
@@ -42,7 +40,7 @@ class Utility(commands.Cog):
                       {0}joined user id`
                       {0}joined user mention\n
                       """, description="Returns back when the user has joined the server")
-    async def joined(self, ctx, *, member: discord.Member = None):
+    async def joined(self, ctx: commands.Context, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
         join_date = member.joined_at
@@ -113,7 +111,7 @@ class Utility(commands.Cog):
                       {0}avatar `id` -> Note That this can get anyone's avatar whether they're in the server or not.
                       {0}avatar `user mention`\n""",
                       description="Returns back user's Avatar whether they're in the server or not typing their ID")
-    async def avatar(self, ctx, *, member: discord.Member | str = None):
+    async def avatar(self, ctx: commands.Context, *, member: discord.Member | str = None):
         if member == None:
             member = ctx.author
         try:
@@ -143,7 +141,7 @@ class Utility(commands.Cog):
                       {0}roles `id`
                       {0}roles `user mention`\n""",
                       description="Returns back user's Roles")
-    async def roles(self, ctx, *, member: discord.Member = None):
+    async def roles(self, ctx: commands.Context, *, member: discord.Member = None):
         if member == None:
             member = ctx.author
         roles = ""
@@ -165,7 +163,7 @@ class Utility(commands.Cog):
                       {0}banner 
                       {0}banner `user id` -> Note That this can get anyone's banner whether they're in the server or not.
                       {0}banner `user mention`\n""", description="Returns back user's Banner whether they're in the server or not typing their ID")
-    async def banner(self, ctx, *, user: discord.Member | str = None):
+    async def banner(self, ctx: commands.Context, *, user: discord.Member | str = None):
         if user == None:
             user = ctx.author
         try:
@@ -316,7 +314,7 @@ class Utility(commands.Cog):
                       {0}channelinfo `channel id`
                       {0}channelinfo `channel mention`""",
                       description="Returns Channels's info")
-    async def channelinfo(self, ctx,* , channel: discord.abc.GuildChannel = None):
+    async def channelinfo(self, ctx: commands.Context, * , channel: discord.abc.GuildChannel = None):
         if channel == None:
             channel = ctx.channel
         embed = Embed(title="Channel info", color=ctx.author.color, timestamp=ctx.message.created_at)

@@ -4,8 +4,25 @@ from discord import Embed
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
 import psycopg
+import datetime
 DB_URI = os.getenv("DB_URI")
 
+class ReportModal(discord.ui.Modal):
+    def __init__(self, bot, ctx, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.add_item(discord.ui.InputText(style=discord.InputTextStyle.paragraph,label="Report Message", max_length=1024))
+        self.bot = bot
+        self.ctx = ctx
+        
+    async def callback(self, interaction: discord.Interaction):
+        await self.send_report(str(self.children[0].value))
+        await interaction.response.send_message("Message has been sent successfully to support.")
+    
+    async def send_report(self, message:str):
+        report_channel : discord.TextChannel = await self.bot.fetch_channel(1162121251075129415)
+        embed = Embed(title="Report", description="Sent by {0}".format(self.ctx.author), timestamp=datetime.datetime.now())
+        embed.add_field(name="Message Body", value=message, inline=False)
+        await report_channel.send(embed=embed)
 
 class PageTest(commands.Cog):
     def __init__(self, bot):
@@ -107,6 +124,12 @@ class PageTest(commands.Cog):
                 await ctx.send("Invaild Command name.\nSyntax is: `{0}help command_name`\nLike {0}help avatar\nYou can get all commands using </help:1130171436573655091>".format(current_prefix))
         else:   
             await ctx.send("Invaild Command name.\nSyntax is: `{0}help command_name`\nFor example: {0}help avatar\nYou can get all commands using </help:1130171436573655091>".format(current_prefix))
-                    
+    
+    @commands.slash_command(description="Report an error")
+    async def report(self, ctx: discord.ApplicationContext):
+        modal = ReportModal(title="Report", bot=self.bot, ctx=ctx)
+        await ctx.send_modal(modal)
+        
+        
 def setup(bot):
     bot.add_cog(PageTest(bot))
